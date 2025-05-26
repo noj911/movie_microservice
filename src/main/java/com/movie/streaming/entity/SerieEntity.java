@@ -1,5 +1,6 @@
 package com.movie.streaming.entity;
 
+import com.movie.streaming.enums.MovieEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

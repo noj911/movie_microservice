@@ -1,12 +1,14 @@
 package com.movie.streaming.dto;
 
 import com.movie.streaming.enums.CategoryEnum;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class MovieDto {
+@Builder
+public class MovieSearchCriteria {
     private Long id;
     private String title;
     private CategoryEnum category;
