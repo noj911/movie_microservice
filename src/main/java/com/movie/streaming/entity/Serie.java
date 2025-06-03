@@ -1,33 +1,32 @@
 package com.movie.streaming.entity;
 
-import com.movie.streaming.enums.MovieEntity;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity
-@DiscriminatorValue("SERIE")
+@Document(collection = "series")
 @Getter
 @Setter
 @NoArgsConstructor
 @SuperBuilder
-public class SerieEntity extends MovieEntity {
+public class Serie extends Movie {
 
-    @NotBlank(message = "Le créateur est obligatoire")
+    @NotBlank(message = "Le nom du producteur de la série est obligatoire")
     @Size(max = 100, message = "Le nom du créateur ne peut pas dépasser 100 caractères")
-    @Column(name = "CREATEUR", length = 100)
-    private String createur;
+    @Field(name = "producteur")
+    private String producteur;
 
-    @OneToMany(mappedBy = "SERIE", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<SaisonEntity> saisons = new ArrayList<>();
+    @Field(name = "saisons")
+    private List<Saison> saisons = new ArrayList<>();
 
-    @Column(name = "EN_COURS")
+    @Field(name = "en_cours")
     private boolean enCours = true;
 }
