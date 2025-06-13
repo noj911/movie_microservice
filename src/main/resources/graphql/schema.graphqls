@@ -1,4 +1,22 @@
 type Query {
     hello: String
+
+}
+type Saison {
+    id: String
+    title : String
+    duration :Int
+}
+
+type Serie {
+    id: String
+    title : String
+    duration :Int
+    category: String
+    thumbnailUrl :String
+    synopsis : String
+    producteur : String
+    saisons : [Saison]
+    enCours:String
 }
 
