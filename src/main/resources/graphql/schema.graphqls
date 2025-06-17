@@ -1,22 +1,42 @@
-type Query {
-    hello: String
-
-}
-type Saison {
-    id: String
-    title : String
-    duration :Int
-}
-
 type Serie {
-    id: String
-    title : String
-    duration :Int
+    id: ID!
+    titre: String
+    duree: Int
+    categorie: String
+    urlMiniature: String
+    synopsis: String
+    producteur: String
+    saisons: [Saison]
+    enCours: Boolean
+}
+
+type Saison {
+    id: ID!
+    titre: String!
+    duree: Int!
+    numero: Int!
+    episodes: [Episode]
+}
+
+type Episode {
+    id: ID!
+    titre: String!
+    numeroSequence: Int!
+    duree: Int!
+    description: String
+    urlMiniature: String
+    saison: Saison
+}
+input SerieFilter {
+    title: String
+    producteur: String
     category: String
-    thumbnailUrl :String
-    synopsis : String
-    producteur : String
-    saisons : [Saison]
-    enCours:String
+    enCours: Boolean
+}
+
+
+type Query {
+    getAllSerie: [Serie]
+    serie(filter: SerieFilter): [Serie]
 }
 
