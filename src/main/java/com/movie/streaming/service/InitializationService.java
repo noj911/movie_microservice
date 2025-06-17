@@ -5,7 +5,7 @@ import com.movie.streaming.entity.Saison;
 import com.movie.streaming.entity.Serie;
 import com.movie.streaming.repository.MovieRepository;
 import com.movie.streaming.repository.SerieRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -14,11 +14,11 @@ import java.util.Collections;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class InitializationService {
-    @Autowired
-    private MovieRepository movieRepository;
-    @Autowired
-    private SerieRepository serieRepository;
+
+
+    private final SerieRepository serieRepository;
 
     @PostConstruct
     public void initialization() {
