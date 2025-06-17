@@ -3,7 +3,6 @@ package com.movie.streaming.service;
 import com.movie.streaming.entity.Episode;
 import com.movie.streaming.entity.Saison;
 import com.movie.streaming.entity.Serie;
-import com.movie.streaming.repository.MovieRepository;
 import com.movie.streaming.repository.SerieRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
