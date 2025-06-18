@@ -29,8 +29,8 @@ public class Saison implements Serializable {
 
     @NotNull(message = "Le numéro de saison est obligatoire")
     @Min(value = 1, message = "Le numéro de saison doit être positif")
-    @Field(name = "numero")
-    private Integer numero;
+    @Field(name = "numeroSequence")
+    private Integer numeroSequence;
 
     @Field(name = "episode")
     private List<Episode> episodes;

@@ -42,8 +42,6 @@ public class Episode implements Serializable {
     @Field(name = "url_miniature")
     private String urlMiniature;
 
-    @Field(name = "saisonId")
-    private String saisonId;
 
 
 }

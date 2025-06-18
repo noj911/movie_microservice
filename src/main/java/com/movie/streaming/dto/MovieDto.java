@@ -1,11 +1,11 @@
 package com.movie.streaming.dto;
 
 import com.movie.streaming.enums.CategoryEnum;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.List;
-
-@Data
+@Setter
+@Getter
 public class MovieDto {
     private Long id;
     private String title;

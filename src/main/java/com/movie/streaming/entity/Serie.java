@@ -29,5 +29,5 @@ public class Serie extends Movie {
     private List<Saison> saisons;
 
     @Field(name = "en_cours")
-    private boolean enCours = true;
+    private boolean enCours;
 }

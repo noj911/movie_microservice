@@ -31,7 +31,7 @@ public class InitializationService {
                             .saisons(Arrays.asList(
                                             Saison.builder()
                                                     .titre("Saison1")
-                                                    .numero(1).
+                                                    .numeroSequence(1).
                                                     episodes(Collections.singletonList(
                                                             Episode.builder()
                                                                     .titre("Intro")

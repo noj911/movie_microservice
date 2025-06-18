@@ -11,15 +11,13 @@ type Serie {
 }
 
 type Saison {
-    id: ID!
-    titre: String!
-    duree: Int!
-    numero: Int!
+    titre: String
+    duree: Int
+    numero: Int
     episodes: [Episode]
 }
 
 type Episode {
-    id: ID!
     titre: String!
     numeroSequence: Int!
     duree: Int!
@@ -33,10 +31,43 @@ input SerieFilter {
     category: String
     enCours: Boolean
 }
+input SerieInput {
+    titre: String!
+    duree: Int
+    categorie: String
+    urlMiniature: String
+    synopsis: String
+    producteur: String
+    enCours: Boolean
+}
+
+input SaisonInput {
+    numero: Int!
+    nombreEpisodes: Int!
+    dateDebut: String
+    dateFin: String
+}
+
 
 
 type Query {
-    getAllSerie: [Serie]
-    serie(filter: SerieFilter): [Serie]
+    getSerieById(id: ID!): Serie
+    getAllSeries: [44444  Serie]
+    getSeriesByCriteria(filter: SerieFilter): [Serie]
+    getSeriesByCategory(category: String!): [Serie]!
 }
+type Mutation {
+    # Créer une nouvelle série
+    createSerie(serieInput: SerieInput!): Serie!
+
+    # Mettre à jour une série existante
+    updateSerie(id: ID!, serieInput: SerieInput!): Serie!
+
+    # Supprimer une série
+    deleteSerie(id: ID!): Boolean!
+
+    # Ajouter une saison à une série
+    addSeason(serieId: ID!, saisonInput: SaisonInput!): Serie!
+}
+
 
