@@ -52,7 +52,7 @@ input SaisonInput {
 
 type Query {
     getSerieById(id: ID!): Serie
-    getAllSeries: [44444  Serie]
+    getAllSeries: [Serie]
     getSeriesByCriteria(filter: SerieFilter): [Serie]
     getSeriesByCategory(category: String!): [Serie]!
 }

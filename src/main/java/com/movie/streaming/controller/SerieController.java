@@ -1,11 +1,13 @@
 package com.movie.streaming.controller;
 
+import com.movie.streaming.dto.SerieDto;
 import com.movie.streaming.dto.SerieFilter;
 import com.movie.streaming.entity.Serie;
 import com.movie.streaming.service.SerieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.stereotype.Controller;
 
@@ -30,6 +32,10 @@ public class SerieController {
     @QueryMapping
     public List<Serie> getSeriesByCategory(@Argument String category) {
         return serieService.findSerieByCategory(category);
+    }
+    @MutationMapping
+    public Serie saveSerie(@Argument SerieDto serieInput) {
+        return serieService.save(serieInput);
     }
 
 
