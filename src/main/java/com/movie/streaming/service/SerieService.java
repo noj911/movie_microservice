@@ -1,9 +1,15 @@
 package com.movie.streaming.service;
 
+import com.movie.streaming.dto.EpisodeDto;
+import com.movie.streaming.dto.SaisonDto;
 import com.movie.streaming.dto.SerieDto;
 import com.movie.streaming.dto.SerieFilter;
+import com.movie.streaming.entity.Saison;
 import com.movie.streaming.entity.Serie;
 import com.movie.streaming.enums.CategoryEnum;
+import com.movie.streaming.exception.SerieNotFoundException;
+import com.movie.streaming.mapper.EpisodeMapper;
+import com.movie.streaming.mapper.SaisonMapper;
 import com.movie.streaming.mapper.SerieMapper;
 import com.movie.streaming.repository.SerieRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +28,8 @@ import java.util.Optional;
 @Slf4j
 public class SerieService implements ISerieService{
     private final SerieMapper serieMapper;
+    private final SaisonMapper saisonMapper;
+    private final EpisodeMapper episodeMapper;
     private  final SerieRepository serieRepository;
     private final MongoTemplate mongoTemplate;
 
@@ -62,17 +70,45 @@ public class SerieService implements ISerieService{
 
     @Override
     public Serie save(SerieDto serieInput) {
-        Serie serie = serieMapper.serieInputToSerie(serieInput);
+        Serie serie = serieMapper.toEntity(serieInput);
         return serieRepository.save(serie);
     }
-
     @Override
-    public Serie update(String id, SerieDto serieInput) {
-        Optional<Serie> existingSerie = serieRepository.findById(id);
-        serieMapper.updateSerieFromInput(existingSerie, serieInput);
-        return serieRepository.save(existingSerie);
+    public boolean delete(SerieDto serieInput) {
+        Serie serie = serieMapper.toEntity(serieInput);
+         serieRepository.deleteById(serie.getId());
+         return true;
     }
 
 
+    @Override
+    public Serie update(SerieDto serieInput) {
+        Optional<Serie> existingSerie = serieRepository.findById(String.valueOf(serieInput.getId()));
+        if (existingSerie.isPresent()) {
+            Serie serietoUpdate= serieMapper.toEntity(serieInput);
+            return serieRepository.save(serietoUpdate);
+        }else {
+            throw new SerieNotFoundException("Serie non retrouvée: " + serieInput.getId());
+        }
+    }
+    @Override
+    public Serie ajouterSaison(String idSerie, SaisonDto nouvelleSaison) {
+        Serie serie = serieRepository.findById(idSerie)
+                .orElseThrow(() -> new RuntimeException("Série non trouvée"));
+        Saison newSaison = saisonMapper.toDto(nouvelleSaison);
+        serie.getSaisons().add(newSaison);
+        return serieRepository.save(serie);
+    }
+    @Override
+    public Serie ajouterEpisode(String idSerie, int numeroSaison, EpisodeDto nouvelEpisode) {
+        Serie serie = serieRepository.findById(idSerie)
+                .orElseThrow(() -> new RuntimeException("Série non trouvée"));
 
+        Saison saison = serie.getSaisons().stream()
+                .filter(s -> s.getNumeroSequence() == numeroSaison)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Saison non trouvée"));
+        saison.getEpisodes().add(episodeMapper.toEntity(nouvelEpisode));
+        return serieRepository.save(serie);
+    }
 }

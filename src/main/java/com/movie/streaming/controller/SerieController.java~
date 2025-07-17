@@ -53,7 +53,7 @@ public class SerieController {
         return serieService.ajouterSaison(idSerie, nouvelleSaison);
     }
     @MutationMapping
-    public Serie addEpisode(@Argument String idSerie, int numeroSaison, EpisodeDto nouvelEpisode) {
+    public Serie ajouterEpisode(@Argument String idSerie, int numeroSaison, EpisodeDto nouvelEpisode) {
         return serieService.ajouterEpisode(idSerie,numeroSaison, nouvelEpisode);
     }
 

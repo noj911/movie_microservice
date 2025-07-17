@@ -25,6 +25,14 @@ type Episode {
     urlMiniature: String
     saison: Saison
 }
+type EpisodeInput {
+    titre: String!
+    numeroSequence: Int!
+    duree: Int!
+    description: String
+    urlMiniature: String
+    saison: Saison
+}
 input SerieFilter {
     title: String
     producteur: String
@@ -61,13 +69,15 @@ type Mutation {
     createSerie(serieInput: SerieInput!): Serie!
 
     # Mettre à jour une série existante
-    updateSerie(id: ID!, serieInput: SerieInput!): Serie!
+    updateSerie( serieInput: SerieInput!): Serie!
 
     # Supprimer une série
     deleteSerie(id: ID!): Boolean!
 
     # Ajouter une saison à une série
     addSeason(serieId: ID!, saisonInput: SaisonInput!): Serie!
+    # Ajouter une saison à une série
+    addEpisode(serieId: ID!,numeroSaison: Int, saisonInput: EpisodeInput!): Serie!
 }
 
 

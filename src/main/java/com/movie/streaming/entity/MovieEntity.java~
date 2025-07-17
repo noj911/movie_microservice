@@ -1,0 +1,57 @@
+§package com.movie.streaming.entity;
+
+import java.io.Serializable;
+
+import com.movie.streaming.enums.CategoryEnum;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+/**
+ * Movie Entity
+ */
+@Document
+@Table(name = "MOVIE")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "type")
+@Getter
+@Setter
+@NoArgsConstructor
+@SuperBuilder
+
+public class MovieEntity implements Serializable {
+
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = "Le titre est obligatoire")
+    @Size(max = 100, message = "Le titre ne peut pas dépasser 100 caractères")
+    @Column(name = "TITLE", nullable = false, length = 100)
+    private String title;
+
+    @Min(value = 1, message = "La durée doit être positive")
+    @Column(name = "DURATION")
+    private Integer duration; // durée en minutes
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "CATEGORY",  nullable = false)
+    private CategoryEnum category;
+
+    @Column(name = "THUMBNAIL_URL")
+    private String thumbnailUrl;
+
+    @Column(name = "SYNOPSIS", length = 500)
+    private String synopsis;
+}

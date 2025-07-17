@@ -26,20 +26,20 @@ public class CategoryEntity implements Serializable {
 	 * Primary key
 	 */
 	@Id
-	@Column(name = "id")
+	@Column(name = "ID")
 	private String id;
 	
 	/**
 	 * Category
 	 */
-	@Column(name = "name", nullable = false, length = 50)
+	@Column(name = "NAME", nullable = false, length = 50)
 	private String name;
 	
 	/**
 	 * List of movies
 	 */
 	@JsonManagedReference
-	@OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "CATEGORY", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<MovieEntity> movies = new ArrayList<MovieEntity>();
 
 	/**

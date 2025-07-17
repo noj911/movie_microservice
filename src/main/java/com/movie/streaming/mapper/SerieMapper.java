@@ -5,11 +5,12 @@ import com.movie.streaming.entity.Serie;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
+import java.util.Optional;
+
 @Mapper(componentModel = "spring")
 public interface SerieMapper {
-    Serie serieInputToSerie(SerieDto serieInput);
-    SerieDto serieToSerieDto(Serie serie);
-    void updateSerieFromInput(@MappingTarget Serie serie, SerieDto serieInput);
+    Serie toEntity(SerieDto serieInput);
+    SerieDto toDto(Serie serie);
 
 
 }

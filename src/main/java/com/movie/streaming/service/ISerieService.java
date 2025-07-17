@@ -1,5 +1,7 @@
 package com.movie.streaming.service;
 
+import com.movie.streaming.dto.EpisodeDto;
+import com.movie.streaming.dto.SaisonDto;
 import com.movie.streaming.dto.SerieDto;
 import com.movie.streaming.dto.SerieFilter;
 import com.movie.streaming.entity.Serie;
@@ -16,5 +18,11 @@ public interface ISerieService {
 
     Serie save(SerieDto serieInput);
 
-    Serie update(String id, SerieDto serieInput);
+    boolean delete(SerieDto serieInput);
+
+    Serie update( SerieDto serieInput);
+
+    Serie ajouterSaison(String idSerie, SaisonDto nouvelleSaison);
+
+    Serie ajouterEpisode(String idSerie, int numeroSaison, EpisodeDto nouvelEpisode);
 }

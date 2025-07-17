@@ -1,4 +1,5 @@
-package com.movie.streaming.dto;
+package com.movie.streaming.mapper;
+import com.movie.streaming.dto.MovieDto;
 import com.movie.streaming.entity.Movie;
 import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")

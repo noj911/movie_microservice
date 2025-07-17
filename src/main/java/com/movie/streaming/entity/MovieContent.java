@@ -1,10 +1,14 @@
 package com.movie.streaming.entity;
 
+import com.movie.streaming.enums.QualiteStream;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Document(collection = "content")
 @Getter
@@ -27,7 +31,6 @@ public class MovieContent {
     private String bitrateAudio;
 
     // État du contenu
-    private StatutTraitement statut;
     private LocalDateTime dateUpload;
 
 }
