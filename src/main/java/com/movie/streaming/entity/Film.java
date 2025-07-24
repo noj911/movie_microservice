@@ -1,6 +1,9 @@
 package com.movie.streaming.entity;
 
 
-public class Film extends Movie {
+import org.springframework.data.mongodb.core.mapping.Field;
 
+public class Film extends Movie {
+    @Field(name = "videometadata")
+    private VideoMetadata content;
 }

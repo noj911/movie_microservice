@@ -4,7 +4,6 @@ import com.movie.streaming.dto.EpisodeDto;
 import com.movie.streaming.dto.SaisonDto;
 import com.movie.streaming.dto.SerieDto;
 import com.movie.streaming.dto.SerieFilter;
-import com.movie.streaming.entity.Episode;
 import com.movie.streaming.entity.Serie;
 import com.movie.streaming.service.SerieService;
 import lombok.RequiredArgsConstructor;

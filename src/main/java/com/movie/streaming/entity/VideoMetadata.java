@@ -10,12 +10,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Document(collection = "content")
+@Document(collection = "videometadata")
 @Getter
 @Setter
 @AllArgsConstructor
 @Builder
-public class MovieContent {
+public class VideoMetadata {
     private String nomFichier;
     private String cheminStockage;
     private String mimeType;

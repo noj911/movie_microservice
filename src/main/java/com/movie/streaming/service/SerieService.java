@@ -4,8 +4,10 @@ import com.movie.streaming.dto.EpisodeDto;
 import com.movie.streaming.dto.SaisonDto;
 import com.movie.streaming.dto.SerieDto;
 import com.movie.streaming.dto.SerieFilter;
+import com.movie.streaming.entity.Episode;
 import com.movie.streaming.entity.Saison;
 import com.movie.streaming.entity.Serie;
+import com.movie.streaming.entity.VideoMetadata;
 import com.movie.streaming.enums.CategoryEnum;
 import com.movie.streaming.exception.SerieNotFoundException;
 import com.movie.streaming.mapper.EpisodeMapper;
@@ -110,5 +112,124 @@ public class SerieService implements ISerieService{
                 .orElseThrow(() -> new RuntimeException("Saison non trouvée"));
         saison.getEpisodes().add(episodeMapper.toEntity(nouvelEpisode));
         return serieRepository.save(serie);
+    }
+
+    /**
+     * Associates a VideoMetadata with an episode
+     * 
+     * @param serieId The ID of the serie
+     * @param saisonNumero The number of the season
+     * @param episodeNumero The number of the episode
+     * @param metadata The VideoMetadata to associate
+     * @return The updated serie
+     */
+    public Serie associerVideoMetadataAEpisode(String serieId, int saisonNumero, int episodeNumero, VideoMetadata metadata) {
+        log.info("Associating VideoMetadata with episode: serie={}, saison={}, episode={}", 
+                serieId, saisonNumero, episodeNumero);
+
+        // Find the serie
+        Serie serie = serieRepository.findById(serieId)
+                .orElseThrow(() -> new SerieNotFoundException("Série non trouvée: " + serieId));
+
+        // Find the season
+        Saison saison = serie.getSaisons().stream()
+                .filter(s -> s.getNumeroSequence() == saisonNumero)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Saison non trouvée: " + saisonNumero));
+
+        // Find the episode
+        Episode episode = saison.getEpisodes().stream()
+                .filter(e -> e.getNumeroSequence() == episodeNumero)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Épisode non trouvé: " + episodeNumero));
+
+        // Associate the metadata
+        episode.setContent(metadata);
+
+        // Save the updated serie
+        Serie updatedSerie = serieRepository.save(serie);
+        log.info("VideoMetadata associated successfully");
+
+        return updatedSerie;
+    }
+
+    /**
+     * Updates an episode's VideoMetadata with a new quality
+     * 
+     * @param serieId The ID of the serie
+     * @param saisonNumero The number of the season
+     * @param episodeNumero The number of the episode
+     * @param updatedMetadata The updated VideoMetadata with new quality
+     * @return The updated serie
+     */
+    public Serie updateEpisodeVideoMetadata(String serieId, int saisonNumero, int episodeNumero, VideoMetadata updatedMetadata) {
+        log.info("Updating VideoMetadata for episode: serie={}, saison={}, episode={}, qualities={}", 
+                serieId, saisonNumero, episodeNumero, updatedMetadata.getQualitesDisponibles());
+
+        // Find the serie
+        Serie serie = serieRepository.findById(serieId)
+                .orElseThrow(() -> new SerieNotFoundException("Série non trouvée: " + serieId));
+
+        // Find the season
+        Saison saison = serie.getSaisons().stream()
+                .filter(s -> s.getNumeroSequence() == saisonNumero)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Saison non trouvée: " + saisonNumero));
+
+        // Find the episode
+        Episode episode = saison.getEpisodes().stream()
+                .filter(e -> e.getNumeroSequence() == episodeNumero)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Épisode non trouvé: " + episodeNumero));
+
+        // Check if the episode already has a VideoMetadata
+        if (episode.getContent() == null) {
+            throw new RuntimeException("L'épisode n'a pas de contenu vidéo associé");
+        }
+
+        // Update the metadata
+        episode.setContent(updatedMetadata);
+
+        // Save the updated serie
+        Serie updatedSerie = serieRepository.save(serie);
+        log.info("VideoMetadata updated successfully with new qualities: {}", updatedMetadata.getQualitesDisponibles());
+
+        return updatedSerie;
+    }
+
+    /**
+     * Gets the VideoMetadata for an episode
+     * 
+     * @param serieId The ID of the serie
+     * @param saisonNumero The number of the season
+     * @param episodeNumero The number of the episode
+     * @return The VideoMetadata for the episode
+     */
+    public VideoMetadata getEpisodeVideoMetadata(String serieId, int saisonNumero, int episodeNumero) {
+        log.info("Getting VideoMetadata for episode: serie={}, saison={}, episode={}", 
+                serieId, saisonNumero, episodeNumero);
+
+        // Find the serie
+        Serie serie = serieRepository.findById(serieId)
+                .orElseThrow(() -> new SerieNotFoundException("Série non trouvée: " + serieId));
+
+        // Find the season
+        Saison saison = serie.getSaisons().stream()
+                .filter(s -> s.getNumeroSequence() == saisonNumero)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Saison non trouvée: " + saisonNumero));
+
+        // Find the episode
+        Episode episode = saison.getEpisodes().stream()
+                .filter(e -> e.getNumeroSequence() == episodeNumero)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Épisode non trouvé: " + episodeNumero));
+
+        // Check if the episode has a VideoMetadata
+        if (episode.getContent() == null) {
+            throw new RuntimeException("L'épisode n'a pas de contenu vidéo associé");
+        }
+
+        return episode.getContent();
     }
 }
