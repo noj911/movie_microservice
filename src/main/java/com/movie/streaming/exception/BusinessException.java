@@ -5,6 +5,11 @@ public class BusinessException extends RuntimeException {
 
     protected BusinessException(String message) {
         super(message);
+        this.code = "BUSINESS_ERROR"; // Default error code
+    }
+
+    protected BusinessException(String message, String code) {
+        super(message);
         this.code = code;
     }
     public String getCode() {

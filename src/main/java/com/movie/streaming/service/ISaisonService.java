@@ -3,7 +3,6 @@ package com.movie.streaming.service;
 import com.movie.streaming.dto.SerieDto;
 import com.movie.streaming.dto.SerieFilter;
 import com.movie.streaming.entity.Saison;
-import com.movie.streaming.entity.Serie;
 
 import java.util.List;
 
