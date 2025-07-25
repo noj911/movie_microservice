@@ -1,0 +1,83 @@
+type Serie {
+    id: ID!
+    titre: String
+    duree: Int
+    categorie: String
+    urlMiniature: String
+    synopsis: String
+    producteur: String
+    saisons: [Saison]
+    enCours: Boolean
+}
+
+type Saison {
+    titre: String
+    duree: Int
+    numero: Int
+    episodes: [Episode]
+}
+
+type Episode {
+    titre: String!
+    numeroSequence: Int!
+    duree: Int!
+    description: String
+    urlMiniature: String
+    saison: Saison
+}
+type EpisodeInput {
+    titre: String!
+    numeroSequence: Int!
+    duree: Int!
+    description: String
+    urlMiniature: String
+    saison: Saison
+}
+input SerieFilter {
+    title: String
+    producteur: String
+    category: String
+    enCours: Boolean
+}
+input SerieInput {
+    titre: String!
+    duree: Int
+    categorie: String
+    urlMiniature: String
+    synopsis: String
+    producteur: String
+    enCours: Boolean
+}
+
+input SaisonInput {
+    numero: Int!
+    nombreEpisodes: Int!
+    dateDebut: String
+    dateFin: String
+}
+
+
+
+type Query {
+    getSerieById(id: ID!): Serie
+    getAllSeries: [Serie]
+    getSeriesByCriteria(filter: SerieFilter): [Serie]
+    getSeriesByCategory(category: String!): [Serie]!
+}
+type Mutation {
+    # Créer une nouvelle série
+    createSerie(serieInput: SerieInput!): Serie!
+
+    # Mettre à jour une série existante
+    updateSerie( serieInput: SerieInput!): Serie!
+
+    # Supprimer une série
+    deleteSerie(id: ID!): Boolean!
+
+    # Ajouter une saison à une série
+    addSeason(serieId: ID!, saisonInput: SaisonInput!): Serie!
+    # Ajouter une saison à une série
+    addEpisode(serieId: ID!,numeroSaison: Int, saisonInput: EpisodeInput!): Serie!
+}
+
+

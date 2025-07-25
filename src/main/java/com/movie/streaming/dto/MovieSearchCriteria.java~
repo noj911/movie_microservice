@@ -1,0 +1,17 @@
+package com.movie.streaming.dto;
+
+import com.movie.streaming.enums.CategoryEnum;
+import lombok.Builder;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+@Builder
+public class MovieSearchCriteria {
+    private String title;
+    private CategoryEnum category;
+    private Integer minDuration;
+    private Integer maxDuration;
+    private List<String> genres;
+}

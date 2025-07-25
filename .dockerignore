@@ -1,0 +1,12 @@
+.git
+.github
+.gitignore
+.idea
+*.iml
+target/
+!target/*.jar
+node_modules/
+.env
+*.log
+k8s/
+README.md

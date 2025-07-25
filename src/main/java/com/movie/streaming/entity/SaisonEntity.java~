@@ -6,13 +6,15 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-@Entity
-@Table(name = "SAISON")
+@Document(collection = "saison")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,8 +23,7 @@ public class SaisonEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
 
     @NotNull(message = "Le numéro de saison est obligatoire")
     @Min(value = 1, message = "Le numéro de saison doit être positif")

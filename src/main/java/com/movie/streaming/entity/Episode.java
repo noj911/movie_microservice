@@ -1,52 +1,49 @@
 package com.movie.streaming.entity;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
 
-@Entity
-@Table(name = "EPISODE")
+@Document(collection = "episode")
 @Getter
 @Setter
-@NoArgsConstructor
-public class EpisodeEntity implements Serializable {
+@AllArgsConstructor
+@Builder
+public class Episode implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @NotBlank(message = "Le titre est obligatoire")
     @Size(max = 100, message = "Le titre ne peut pas dépasser 100 caractères")
-    @Column(name = "TITRE", length = 100)
+    @Field(name = "titre")
     private String titre;
 
     @NotNull(message = "Le numéro d'épisode est obligatoire")
     @Min(value = 1, message = "Le numéro d'épisode doit être positif")
-    @Column(name = "NUMERO")
-    private Integer numero;
+    @Field(name = "numerosequence")
+    private Integer numeroSequence;
 
     @NotNull(message = "La durée est obligatoire")
     @Min(value = 1, message = "La durée doit être positive")
-    @Column(name = "DUREE")
+    @Field(name = "duree")
     private Integer duree; // en minutes
 
-    @Column(name = "DESCRIPTION", length = 500)
+    @Field(name = "description")
     private String description;
 
-    @Column(name = "URL_MINIATURE")
+    @Field(name = "url_miniature")
     private String urlMiniature;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "SAISON_ID")
-    private SaisonEntity saison;
+    @Field(name = "videometadata")
+    private VideoMetadata content;
+
 }
 
