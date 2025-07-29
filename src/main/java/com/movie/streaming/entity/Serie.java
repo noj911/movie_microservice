@@ -30,4 +30,5 @@ public class Serie extends Movie {
 
     @Field(name = "en_cours")
     private boolean enCours;
+
 }

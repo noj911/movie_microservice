@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: microservices-config
+  labels:
+    app: movie-streaming
+data:
+  storage-service-url: "http://storage-service:8080"
+  auth-service-url: "http://auth-service:8080"
+  transcoding-service-url: "http://transcoding-service:8080"

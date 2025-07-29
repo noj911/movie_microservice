@@ -15,7 +15,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @Builder
-public class MovieContent {
+public class VideoMetadata {
     private String nomFichier;
     private String cheminStockage;
     private String mimeType;
