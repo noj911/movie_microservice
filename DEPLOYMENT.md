@@ -61,7 +61,7 @@ make local-down
 ```
 
 This will start all the necessary services and expose:
-- The application on http://localhost:8080
+- The application on http://localhost:8085
 - MongoDB on localhost:27017
 - Prometheus on http://localhost:9090
 - Grafana on http://localhost:3000 (default credentials: admin/admin)
@@ -201,7 +201,7 @@ The deployment includes several security best practices:
 2. **Monitoring not working**:
    - Check Prometheus logs: `kubectl logs deployment/prometheus`
    - Verify Prometheus configuration: `kubectl get configmap prometheus-config -o yaml`
-   - Check if metrics endpoint is accessible: `kubectl port-forward deployment/movie-streaming 8080:8080` and then access http://localhost:8080/actuator/prometheus
+   - Check if metrics endpoint is accessible: `kubectl port-forward deployment/movie-streaming 8085:8085` and then access http://localhost:8085/actuator/prometheus
 
 3. **CI/CD pipeline failures**:
    - Check GitHub Actions logs
