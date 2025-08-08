@@ -6,13 +6,17 @@ import com.movie.streaming.dto.SerieDto;
 import com.movie.streaming.dto.SerieFilter;
 import com.movie.streaming.entity.Episode;
 import com.movie.streaming.entity.Serie;
+import com.movie.streaming.enums.QualiteStream;
 import com.movie.streaming.service.SerieService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -57,5 +61,36 @@ public class SerieController {
         return serieService.ajouterEpisode(idSerie,numeroSaison, nouvelEpisode);
     }
 
+    /**
+     * Uploads a video file for an episode
+     */
+    @PostMapping(value = "/api/series/{serieId}/saisons/{saisonNumero}/episodes/{episodeNumero}/video", 
+                consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Serie uploadEpisodeVideo(
+            @PathVariable String serieId,
+            @PathVariable int saisonNumero,
+            @PathVariable int episodeNumero,
+            @RequestParam("file") MultipartFile videoFile) {
 
+        log.info("Received request to upload video for episode: serie={}, saison={}, episode={}, filename={}",
+                serieId, saisonNumero, episodeNumero, videoFile.getOriginalFilename());
+
+        return serieService.uploadEpisodeVideo(serieId, saisonNumero, episodeNumero, videoFile);
+    }
+
+    /**
+     * Updates the transcoded versions of an episode's video
+     */
+    @PostMapping("/api/series/{serieId}/saisons/{saisonNumero}/episodes/{episodeNumero}/transcoded")
+    public Serie updateEpisodeTranscodedVersions(
+            @PathVariable String serieId,
+            @PathVariable int saisonNumero,
+            @PathVariable int episodeNumero,
+            @RequestBody List<QualiteStream> qualities) {
+
+        log.info("Received request to update transcoded versions: serie={}, saison={}, episode={}, qualities={}",
+                serieId, saisonNumero, episodeNumero, qualities);
+
+        return serieService.updateEpisodeTranscodedVersions(serieId, saisonNumero, episodeNumero, qualities);
+    }
 }

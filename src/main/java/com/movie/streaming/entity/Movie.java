@@ -41,9 +41,6 @@ public abstract class Movie implements Serializable {
     @NotBlank(message = "Le genre est obligatoire")
     private CategoryEnum category;
 
-    @Field(name = "thumbnail_url")
-    private String thumbnailUrl;
-
     @Field(name = "SYNOPSIS")
     private String synopsis;
 }

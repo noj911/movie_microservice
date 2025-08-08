@@ -61,7 +61,7 @@ make local-down
 ```
 
 This will start all the necessary services and expose:
-- The application on http://localhost:8085
+- The application on http://localhost:8080
 - MongoDB on localhost:27017
 - Prometheus on http://localhost:9090
 - Grafana on http://localhost:3000 (default credentials: admin/admin)
@@ -80,6 +80,86 @@ The application is deployed to Kubernetes using the following resources:
    - Environment variables
 3. **Service** (`k8s/service.yaml`): Exposes the application within the cluster
 4. **Ingress** (`k8s/ingress.yaml`): Exposes the application outside the cluster with TLS
+
+### Test Environment
+
+For the test environment, separate Kubernetes resources are provided:
+
+1. **Test ConfigMap** (`k8s/test-configmap.yaml`): Contains test-specific configuration
+   - Test service URLs
+   - MongoDB configuration for test environment
+   - Spring profile activation
+2. **Test Deployment** (`k8s/test-deployment.yaml`): Defines the test deployment with:
+   - 2 replicas for the test environment
+   - Resource limits and requests
+   - Health checks
+   - Environment variables configured for test
+3. **Test Service** (`k8s/test-service.yaml`): Exposes the test application within the cluster
+4. **Test Ingress** (`k8s/test-ingress.yaml`): Exposes the test application outside the cluster
+
+To deploy to the test environment, use:
+
+```bash
+# Build, push, and deploy to the test environment in one command
+make test-all
+
+# Or use individual commands:
+
+# Build for test environment
+make build-test
+
+# Push test Docker image
+make push-test
+
+# Deploy the test environment
+make deploy-test
+
+# Or manually apply the test configuration
+kubectl apply -f k8s/test-configmap.yaml
+kubectl apply -f k8s/test-deployment.yaml
+kubectl apply -f k8s/test-service.yaml
+kubectl apply -f k8s/test-ingress.yaml
+```
+
+### Project Environment
+
+For the project environment, separate Kubernetes resources are provided:
+
+1. **Project ConfigMap** (`k8s/proj-configmap.yaml`): Contains project-specific configuration
+   - Project service URLs
+   - MongoDB configuration for project environment
+   - Spring profile activation
+2. **Project Deployment** (`k8s/proj-deployment.yaml`): Defines the project deployment with:
+   - 2 replicas for the project environment
+   - Resource limits and requests
+   - Health checks
+   - Environment variables configured for project
+3. **Project Service** (`k8s/proj-service.yaml`): Exposes the project application within the cluster
+4. **Project Ingress** (`k8s/proj-ingress.yaml`): Exposes the project application outside the cluster
+
+To deploy to the project environment, use:
+
+```bash
+# Build, push, and deploy to the project environment in one command
+make proj-all
+
+# Or use individual commands:
+
+# Build for project environment
+make build-proj
+
+# Push project Docker image
+make push-proj
+
+# Deploy the project environment
+make deploy-proj
+
+# Or manually apply the project configuration
+kubectl apply -f k8s/proj-configmap.yaml
+kubectl apply -f k8s/proj-deployment.yaml
+kubectl apply -f k8s/proj-service.yaml
+kubectl apply -f k8s/proj-ingress.yaml
+```
 
 ### Monitoring Resources
 
@@ -201,7 +281,7 @@ The deployment includes several security best practices:
 2. **Monitoring not working**:
    - Check Prometheus logs: `kubectl logs deployment/prometheus`
    - Verify Prometheus configuration: `kubectl get configmap prometheus-config -o yaml`
-   - Check if metrics endpoint is accessible: `kubectl port-forward deployment/movie-streaming 8085:8085` and then access http://localhost:8085/actuator/prometheus
+   - Check if metrics endpoint is accessible: `kubectl port-forward deployment/movie-streaming 8080:8080` and then access http://localhost:8080/actuator/prometheus
 
 3. **CI/CD pipeline failures**:
    - Check GitHub Actions logs

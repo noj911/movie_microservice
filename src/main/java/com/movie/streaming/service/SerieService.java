@@ -1,5 +1,6 @@
 package com.movie.streaming.service;
 
+import com.movie.streaming.client.StorageServiceClient;
 import com.movie.streaming.dto.EpisodeDto;
 import com.movie.streaming.dto.SaisonDto;
 import com.movie.streaming.dto.SerieDto;
@@ -9,6 +10,7 @@ import com.movie.streaming.entity.Saison;
 import com.movie.streaming.entity.Serie;
 import com.movie.streaming.entity.VideoMetadata;
 import com.movie.streaming.enums.CategoryEnum;
+import com.movie.streaming.enums.QualiteStream;
 import com.movie.streaming.exception.SerieNotFoundException;
 import com.movie.streaming.mapper.EpisodeMapper;
 import com.movie.streaming.mapper.SaisonMapper;
@@ -20,10 +22,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -33,8 +37,9 @@ public class SerieService implements ISerieService{
     private final SerieMapper serieMapper;
     private final SaisonMapper saisonMapper;
     private final EpisodeMapper episodeMapper;
-    private  final SerieRepository serieRepository;
+    private final SerieRepository serieRepository;
     private final MongoTemplate mongoTemplate;
+    private final StorageServiceClient storageServiceClient;
 
     @Override
     public List<Serie> findAll() {
@@ -239,5 +244,102 @@ public class SerieService implements ISerieService{
                 metadata, metadata.getQualitesDisponibles());
 
         return metadata;
+    }
+
+    /**
+     * Uploads a video file for an episode and associates the metadata
+     * 
+     * @param serieId The ID of the serie
+     * @param saisonNumero The number of the season
+     * @param episodeNumero The number of the episode
+     * @param videoFile The video file to upload
+     * @return The updated serie
+     */
+    public Serie uploadEpisodeVideo(String serieId, int saisonNumero, int episodeNumero, MultipartFile videoFile) {
+        log.info("Uploading video for episode: serie={}, saison={}, episode={}, filename={}", 
+                serieId, saisonNumero, episodeNumero, videoFile.getOriginalFilename());
+
+        try {
+            // 1. Initialize upload in Storage service
+            String fileId = storageServiceClient.initializeUpload(
+                    videoFile.getOriginalFilename(),
+                    videoFile.getContentType(),
+                    videoFile.getSize());
+
+            log.info("Upload initialized with fileId: {}", fileId);
+
+            // 2. Upload the file to Storage service
+            storageServiceClient.uploadFile(fileId, videoFile);
+            log.info("File uploaded successfully to Storage service");
+
+            // 3. Create VideoMetadata for the episode
+            VideoMetadata metadata = VideoMetadata.builder()
+                    .nomFichier(videoFile.getOriginalFilename())
+                    .cheminStockage(fileId)  // Store the fileId as the storage path
+                    .mimeType(videoFile.getContentType())
+                    .tailleFichier(videoFile.getSize())
+                    .dateUpload(LocalDateTime.now())
+                    .build();
+
+            // 4. Associate the metadata with the episode
+            Serie updatedSerie = associerVideoMetadataAEpisode(serieId, saisonNumero, episodeNumero, metadata);
+            log.info("VideoMetadata associated with episode successfully");
+
+            return updatedSerie;
+        } catch (Exception e) {
+            log.error("Error uploading video file", e);
+            throw new RuntimeException("Error uploading video file: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Updates the transcoded versions of an episode's video
+     * 
+     * @param serieId The ID of the serie
+     * @param saisonNumero The number of the season
+     * @param episodeNumero The number of the episode
+     * @param qualities The list of available qualities
+     * @return The updated serie
+     */
+    public Serie updateEpisodeTranscodedVersions(String serieId, int saisonNumero, int episodeNumero, 
+                                                List<QualiteStream> qualities) {
+        log.info("Updating transcoded versions for episode: serie={}, saison={}, episode={}, qualities={}", 
+                serieId, saisonNumero, episodeNumero, qualities);
+
+        // 1. Get the current VideoMetadata
+        VideoMetadata metadata = getEpisodeVideoMetadata(serieId, saisonNumero, episodeNumero);
+
+        // 2. Update the qualities
+        metadata.setQualitesDisponibles(qualities);
+
+        // 3. Update the Storage service with transcoded versions
+        List<StorageServiceClient.TranscodedVersion> transcodedVersions = qualities.stream()
+                .map(quality -> {
+                    StorageServiceClient.TranscodedVersion version = new StorageServiceClient.TranscodedVersion();
+                    version.setQuality(quality.name());
+                    version.setPath("/transcoded/" + metadata.getCheminStockage() + "/" + quality.name());
+                    version.setSize((long) (metadata.getTailleFichier() * getScaleFactor(quality)));
+                    return version;
+                })
+                .collect(Collectors.toList());
+
+        storageServiceClient.updateTranscodedVersions(metadata.getCheminStockage(), transcodedVersions);
+        log.info("Transcoded versions updated in Storage service");
+
+        // 4. Update the episode's metadata
+        Serie updatedSerie = updateEpisodeVideoMetadata(serieId, saisonNumero, episodeNumero, metadata);
+        log.info("Episode metadata updated successfully");
+
+        return updatedSerie;
+    }
+
+    /**
+     * Gets the scale factor for a quality
+     * 
+     * @param quality The quality
+     * @return The scale factor
+     */
+    private float getScaleFactor(QualiteStream quality) {
+        return quality.getScaleFactor();
     }
 }

@@ -5,6 +5,12 @@ metadata:
   labels:
     app: movie-streaming
 data:
-  storage-service-url: "http://storage-service:8085"
-  auth-service-url: "http://auth-service:8085"
-  transcoding-service-url: "http://transcoding-service:8085"
+  # Production environment URLs
+  storage-service-url: "http://storage-service:8080"
+  auth-service-url: "http://auth-service:8080"
+  transcoding-service-url: "http://transcoding-service:8080"
+
+  # Test environment URLs
+  storage-service-test-url: "http://storage-service-test:8080"
+  auth-service-test-url: "http://auth-service-test:8080"
+  transcoding-service-test-url: "http://transcoding-service-test:8080"
